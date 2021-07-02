@@ -31,19 +31,29 @@ class LoginActivity : AppCompatActivity() {
 
 
         tvSignUpLink.setOnClickListener {
-            var backIntent = Intent(baseContext,MainActivity::class.java)
+            val backIntent = Intent(baseContext,MainActivity::class.java)
             startActivity(backIntent)
         }
 
         btnLogin.setOnClickListener {
             if (editEmail.text.trim().toString().isNotEmpty() || editPassword.text.trim().toString().isNotEmpty()){
-
-                var intent = Intent(baseContext, AddQuoteActivity::class.java)
-                startActivity(intent)
+                   signInUser(editEmail.text.trim().toString(),editPassword.text.trim().toString())
+            }
+            else{
+                Toast.makeText(baseContext,"Please enter required fields",Toast.LENGTH_LONG).show()
             }
         }
     }
     fun signInUser(email:String,password:String){
+        auth.signInWithEmailAndPassword(email,password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    val intent = Intent(baseContext,AddQuoteActivity::class.java)
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(baseContext,"Error !!" + task.exception,Toast.LENGTH_LONG).show()
+                }
+            }
 
     }
 }

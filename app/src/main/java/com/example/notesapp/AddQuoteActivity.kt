@@ -11,7 +11,7 @@ class AddQuoteActivity : AppCompatActivity() {
     lateinit var btnViewQuotes :Button
     lateinit var edAuthor :EditText
     lateinit var edQuote : EditText
-    lateinit var btnView : EditText
+    lateinit var btnView : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
