@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 
 class ViewQuotesActivity : AppCompatActivity() {
-    lateinit var rvQuotes: RecyclerView
+//    lateinit var rvQuotes: RecyclerView
     lateinit var tvWriter :TextView
     lateinit var tvQuote :TextView
 
@@ -31,14 +33,14 @@ class ViewQuotesActivity : AppCompatActivity() {
         readFireStoreData()
     }
 
-    fun saveFireStore(author: String, quote: String) {
-        var db = FirebaseFirestore.getInstance()
-        var quote: MutableMap<String, Any> = HashMap()
+    fun saveFireStore(author: String, quoted: String) {
+        val db = FirebaseFirestore.getInstance()
+        val quote: MutableMap<String, Any> = HashMap()
         quote["author"] = author
-        quote["quote"] = quote
+        quote["quote"] = quoted
 
         db.collection("quotes")
-            .add("quotes")
+            .add(quote)
             .addOnSuccessListener {
                 Toast.makeText(baseContext, "quote added successfully", Toast.LENGTH_LONG).show()
                 readFireStoreData()
@@ -49,14 +51,27 @@ class ViewQuotesActivity : AppCompatActivity() {
     }
 
     fun readFireStoreData() {
-        var db = FirebaseFirestore.getInstance()
+        val db = FirebaseFirestore.getInstance()
 
         db.collection("quotes")
             .get()
-            .addOnCompleteListener { task ->
+            .addOnCompleteListener {
+
+
                 var quotesList = mutableListOf<Quotes>()
-                if (task.isSuccessful) {
-//                      for ()
+                if (it.isSuccessful) {
+                    var results:StringBuffer = StringBuffer()
+                       for (quote in it.result!!){
+                            results.append(quote.data.getValue("author")).append(" ")
+                                .append(quote.data.getValue("quote")).append(" \n\n\n")
+
+
+//                           var quotesAdapter = QuoteRecyclerViewAdapter(quotesList)
+//                           rvQuotes.adapter = quotesAdapter
+//                           rvQuotes.layoutManager = LinearLayoutManager(baseContext)
+
+                       }
+                    tvWriter.setText(results)
                 }
             }
     }
