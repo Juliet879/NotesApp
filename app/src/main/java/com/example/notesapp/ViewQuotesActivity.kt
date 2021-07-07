@@ -1,7 +1,9 @@
 package com.example.notesapp
 
+import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,9 +12,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 
 class ViewQuotesActivity : AppCompatActivity() {
-//    lateinit var rvQuotes: RecyclerView
-    lateinit var tvWriter :TextView
-    lateinit var tvQuote :TextView
+    //    lateinit var rvQuotes: RecyclerView
+    lateinit var tvWriter: TextView
+    lateinit var tvQuote: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,7 @@ class ViewQuotesActivity : AppCompatActivity() {
         tvWriter.text = authorIntent.toString()
         tvQuote.text = quotesIntent.toString()
 
-        saveFireStore(authorIntent.toString(),quotesIntent.toString())
+        saveFireStore(authorIntent.toString(), quotesIntent.toString())
         readFireStoreData()
     }
 
@@ -55,24 +57,14 @@ class ViewQuotesActivity : AppCompatActivity() {
 
         db.collection("quotes")
             .get()
-            .addOnCompleteListener {
-
-
-                var quotesList = mutableListOf<Quotes>()
-                if (it.isSuccessful) {
-                    var results:StringBuffer = StringBuffer()
-                       for (quote in it.result!!){
-                            results.append(quote.data.getValue("author")).append(" ")
-                                .append(quote.data.getValue("quote")).append(" \n\n\n")
-
-
-//                           var quotesAdapter = QuoteRecyclerViewAdapter(quotesList)
-//                           rvQuotes.adapter = quotesAdapter
-//                           rvQuotes.layoutManager = LinearLayoutManager(baseContext)
-
-                       }
-                    tvWriter.setText(results)
+            .addOnCompleteListener { result ->
+                for (document in result) {
+                    Log.d(TAG, "${document.id}")
                 }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Get failed with ", exception)
+
             }
     }
 }
